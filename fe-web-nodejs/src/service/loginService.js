@@ -31,7 +31,7 @@ export const postLogin = async (LoginDTO) => {
 
 export const postRegist = async (RegistDTO) => {
   try {
-    const response = await axios.post("/users/signup", RegistDTO);
+    const response = await axios.post("/users/register", RegistDTO);
     console.log("Response:", response.data);
 
     const { token,info ,userId } = response.data;
