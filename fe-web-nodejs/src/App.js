@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Fragment } from 'react';
-import DefaultLayout from './layout/DefaultLayout';
+import DefaultLayout from './layouts/DefaultLayout';
 import publicRoutes from './router/publicRouter';
 
 function App() {

@@ -58,7 +58,7 @@ phoneCaseDesignRouter
 // route("/basic-info")
 phoneCaseDesignRouter.route("/basic-info")
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
-  .get(cors.cors, authenticate.verifyUser,(req, res, next) => {
+  .get(cors.cors, authenticate.verifyUser,authenticate.verifyAdmin,(req, res, next) => {
     PhoneCaseDesigns.find({})
     .select("userId name description image phoneBrand phoneModel price")
     .then(

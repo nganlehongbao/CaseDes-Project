@@ -1,6 +1,6 @@
 var passport = require("passport");
 var GoogleStrategy = require("passport-google-oauth20").Strategy;
-
+const Role = require("../../models/role");
 var userServices = require("../../service/user");
 
 function loginWithGoogle() {
@@ -12,21 +12,28 @@ function loginWithGoogle() {
         callbackURL: process.env.GOOGLE_CALLBACK_URL,
       },
       async function (accessToken, refreshToken, profile, cb) {
-        let user = {
-          googleId: profile.id,
-          firstName: profile.name.familyName,
-          lastName: profile.name.givenName,
-          email: profile.emails ? profile.emails[0].value : "",
-          imgAvt: profile.photos ? profile.photos[0].value : null,
-          typeRegist: profile.provider,
-          role: "65f26343235a6434cb0a62f2"
-        };
-        try {
-          user = await userServices.upsert(user);
-        } catch (error) {
-          throw new Error(error);
-        }
-        return cb(null, user);
+        Role.findOne({ roleName: "USER" })
+        .then(async(foundRole) => {
+          let user = {
+            googleId: profile.id,
+            firstName: profile.name.familyName,
+            lastName: profile.name.givenName,
+            email: profile.emails ? profile.emails[0].value : "",
+            imgAvt: profile.photos ? profile.photos[0].value : null,
+            typeRegist: profile.provider,
+            role: foundRole._id
+          };
+          try {
+            user = await userServices.upsert(user);
+          } catch (error) {
+            throw new Error(error);
+          }
+          return cb(null, user);
+        })
+        .catch((error) => {
+          res.status(500).json({ error: error.message });
+        });
+       
       }
     )
   );

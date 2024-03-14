@@ -8,6 +8,7 @@ var authenticate = require('../authenticate');
 const cors = require('./cors');
 const bcrypt = require('bcrypt');
 const { JSONCookie } = require('cookie-parser');
+const Role = require("../models/role");
 // task 3 ass3
 router.get('/', cors.cors, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
   User.find({})
@@ -39,26 +40,31 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
           if (err) {
             return res.status(500).json({ error: 'Error hashing the password.' });
           }
-          const newUser = new User({
-            firstName,
-            lastName,
-            email,
-            phoneNumber: phone,
-            passwords: hash,
-            role: "65f26343235a6434cb0a62f2"
-          });
-          newUser.save()
-            .then((user) => {
-              const token = authenticate.getToken({ _id: user._id });
-              const infoUser = {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                imgAvt: user.imgAvt,
-                admin: user.admin,
-              };
-              res.statusCode = 200;
-              res.setHeader('Content-Type', 'application/json');
-              res.json({ success: true, token: token, status: 'Login Successful!', info: infoUser, userId: user._id });
+          Role.findOne({ roleName: "USER" })
+            .then((foundRole) => {
+                const newUser = new User({
+                  firstName,
+                  lastName,
+                  email,
+                  phoneNumber: phone,
+                  passwords: hash,
+                  role: foundRole._id 
+                });
+                newUser.save()
+                  .then((user) => {
+                    const token = authenticate.getToken({ _id: user._id });
+                    const infoUser = {
+                      firstName: user.firstName,
+                      lastName: user.lastName,
+                      imgAvt: user.imgAvt,
+                    };
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({ success: true, token: token, status: 'Login Successful!', info: infoUser, userId: user._id });
+                  })
+                  .catch((error) => {
+                    res.status(500).json({ error: error.message });
+                  });
             })
             .catch((error) => {
               res.status(500).json({ error: error.message });
