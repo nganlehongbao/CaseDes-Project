@@ -18,7 +18,6 @@ export const postLogin = async (LoginDTO) => {
   try {
     console.log(LoginDTO);
     const response = await axios.post("/users/login", LoginDTO);
-
     const { token,info ,userId } = response.data;
     setAuthToken({ token,info, userId });
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
