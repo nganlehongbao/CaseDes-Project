@@ -19,7 +19,7 @@ router.get('/', cors.cors, authenticate.verifyUser, authenticate.verifyAdmin, (r
     }, (err) => next(err))
     .catch((err) => next(err));
 });
-router.post('/signup', cors.corsWithOptions, (req, res, next) => {
+router.post('/register', cors.corsWithOptions, (req, res, next) => {
   const { firstName, lastName, email, phone, passwords } = req.body;
   
   const searchCondition = {};
