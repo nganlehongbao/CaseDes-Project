@@ -1,9 +1,11 @@
 import axios from "./axiosConfig";
 import Cookies from "js-cookie";
 export const setAuthToken = ({ token,info, userId }) => {
-  Cookies.set("token", token)
-  Cookies.set("userId", JSON.stringify(userId))
-  Cookies.set("info", JSON.stringify(info))
+  const expirationDate = new Date();
+  expirationDate.setDate(expirationDate.getDate() + 7);
+  Cookies.set("token", token, { expires: expirationDate });
+  Cookies.set("userId", JSON.stringify(userId), { expires: expirationDate });
+  Cookies.set("info", JSON.stringify(info), { expires: expirationDate });
 };
 export const logout = async () => {
   axios.get("/users/logout");
