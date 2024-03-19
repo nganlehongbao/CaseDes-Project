@@ -1,17 +1,19 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-var authenticate = require('../authenticate');
+var authenticate = require("../authenticate");
 const PhoneCaseDesigns = require("../models/phoneCaseDesigns");
 const phoneCaseDesignRouter = express.Router();
-const cors = require('./cors');
+const cors = require("./cors");
 phoneCaseDesignRouter.use(bodyParser.json());
 
 //Create, Read, Delete => dish
 phoneCaseDesignRouter
   .route("/")
-  .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
-  .get(cors.cors, authenticate.verifyUser,(req, res, next) => {
+  .options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+  })
+  .get(cors.cors, (req, res, next) => {
     PhoneCaseDesigns.find({})
       .then(
         (phonCaseDesigns) => {
@@ -24,7 +26,7 @@ phoneCaseDesignRouter
       .catch((err) => next(err));
   })
 
-  .post(cors.corsWithOptions, authenticate.verifyUser,(req, res, next) => {
+  .post(cors.corsWithOptions, (req, res, next) => {
     PhoneCaseDesigns.create(req.body)
       .then(
         (dish) => {
@@ -37,12 +39,12 @@ phoneCaseDesignRouter
       .catch((err) => next(err));
   })
 
-  .put(cors.corsWithOptions, authenticate.verifyUser,(req, res, next) => {
+  .put(cors.corsWithOptions, (req, res, next) => {
     res.statusCode = 403;
     res.end("PUT operation not supported on /quizzes");
   })
 
-  .delete(cors.corsWithOptions, authenticate.verifyUser,(req, res, next) => {
+  .delete(cors.corsWithOptions, (req, res, next) => {
     PhoneCaseDesigns.deleteMany({})
       .then(
         (resp) => {
@@ -56,34 +58,37 @@ phoneCaseDesignRouter
   });
 
 // route("/basic-info")
-phoneCaseDesignRouter.route("/basic-info")
-.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
-  .get(cors.cors, authenticate.verifyUser,authenticate.verifyAdmin,(req, res, next) => {
+phoneCaseDesignRouter
+  .route("/basic-info")
+  .options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+  })
+  .get(cors.cors, (req, res, next) => {
     PhoneCaseDesigns.find({})
-    .select("userId name description image phoneBrand phoneModel price")
-    .then(
-      (phonCaseDesigns) => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json(phonCaseDesigns);
-      },
-      (err) => next(err)
-    )
-    .catch((err) => next(err));
-})
-.put(cors.corsWithOptions, authenticate.verifyUser,(req, res, next) => {
-  res.statusCode = 403;
-  res.end("PUT operation not supported on");
-})
-.post(cors.corsWithOptions, authenticate.verifyUser,(req, res, next) => {
-  res.statusCode = 403;
-  res.end("post operation not supported on");
-})
-.delete(cors.corsWithOptions, authenticate.verifyUser,(req, res, next) => {
-  res.statusCode = 403;
-  res.end("delete operation not supported on");
-})
-;
+      .select("userId name description image phoneBrand phoneModel price")
+      .sort({ createdAt: -1 })
+      .then(
+        (phonCaseDesigns) => {
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.json(phonCaseDesigns);
+        },
+        (err) => next(err)
+      )
+      .catch((err) => next(err));
+  })
+  .put(cors.corsWithOptions, (req, res, next) => {
+    res.statusCode = 403;
+    res.end("PUT operation not supported on");
+  })
+  .post(cors.corsWithOptions, (req, res, next) => {
+    res.statusCode = 403;
+    res.end("post operation not supported on");
+  })
+  .delete(cors.corsWithOptions, (req, res, next) => {
+    res.statusCode = 403;
+    res.end("delete operation not supported on");
+  });
 
 // route("/:phoneCaseDesignId")
 phoneCaseDesignRouter
