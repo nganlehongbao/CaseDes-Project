@@ -13,7 +13,6 @@ function Draw() {
         x: e.offsetX,
         y: e.offsetY,
       };
-
       isDraw.current = true;
     });
     canvas.addEventListener("mouseup", (e) => {

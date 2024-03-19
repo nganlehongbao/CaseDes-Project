@@ -31,7 +31,7 @@ function loginWithGoogle() {
           return cb(null, user);
         })
         .catch((error) => {
-          console.log(error.message)
+          res.status(500).json({ error: error.message });
         });
        
       }

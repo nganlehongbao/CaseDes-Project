@@ -83,8 +83,8 @@ exports.jwtPassport = passport.use(
 exports.facebookPassport = passport.use(
   new FacebookTokenStrategy(
     {
-      clientID: config.facebook.clientId,
-      clientSecret: config.facebook.clientSecret,
+      clientID: process.env.FACEBOOK_APP_ID,  
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
     },
     (accessToken, refreshToken, profile, done) => {
       User.findOne({ facebookId: profile.id })
