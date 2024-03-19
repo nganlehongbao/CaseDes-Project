@@ -13,27 +13,26 @@ function loginWithGoogle() {
       },
       async function (accessToken, refreshToken, profile, cb) {
         Role.findOne({ roleName: "USER" })
-        .then(async(foundRole) => {
-          let user = {
-            googleId: profile.id,
-            firstName: profile.name.familyName,
-            lastName: profile.name.givenName,
-            email: profile.emails ? profile.emails[0].value : "",
-            imgAvt: profile.photos ? profile.photos[0].value : null,
-            typeRegist: profile.provider,
-            role: foundRole._id
-          };
-          try {
-            user = await userServices.upsert(user);
-          } catch (error) {
-            throw new Error(error);
-          }
-          return cb(null, user);
-        })
-        .catch((error) => {
-          res.status(500).json({ error: error.message });
-        });
-       
+          .then(async (foundRole) => {
+            let user = {
+              googleId: profile.id,
+              firstName: profile.name.familyName,
+              lastName: profile.name.givenName,
+              email: profile.emails ? profile.emails[0].value : "",
+              imgAvt: profile.photos ? profile.photos[0].value : null,
+              typeRegist: profile.provider,
+              role: foundRole._id,
+            };
+            try {
+              user = await userServices.upsert(user);
+            } catch (error) {
+              throw new Error(error);
+            }
+            return cb(null, user);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
     )
   );
