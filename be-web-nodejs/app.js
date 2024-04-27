@@ -15,6 +15,7 @@ var usersRouter = require("./routes/users");
 var authRouter = require("./routes/authRouter");
 var roleRouter = require("./routes/roleRouter");
 var uploadRouter = require("./routes/uploadRouter");
+var sendOtpRouter = require("./routes/sendOtpRouter");
 const phoneCaseDesignRouter = require("./routes/phoneCaseDesignRouter");
 
 //passport
@@ -79,6 +80,7 @@ app.use("/users", usersRouter);
 app.use("/role", roleRouter);
 app.use("/imageUpload", uploadRouter);
 app.use("/design-phone-case", phoneCaseDesignRouter);
+app.use("/author", sendOtpRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
