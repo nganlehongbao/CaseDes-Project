@@ -217,7 +217,7 @@ const Login = (props) => {
                             </div>
                         </div>
                         <div className="mt-4 text-right">
-                            <a href="/;" className="text-blue-600 text-sm font-semibold hover:underline">
+                            <a href="/send-otp" className="text-blue-600 text-sm font-semibold hover:underline">
                                 Forgot your password?
                             </a>
                         </div>

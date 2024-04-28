@@ -29,7 +29,7 @@ function validateNumber(inputValue) {
     }
     return false;
 }
-router.post("/sendOtp", cors.corsWithOptions,async (req, res, next) => {
+router.post("/sendOtp", cors.corsWithOptions, async (req, res, next) => {
     const inputValue = req.body.emailOrPhone;
     const inputField = validateEmail(inputValue) ? "email" : "phoneNumber";
     const g_otp = await generateOtp();
@@ -37,45 +37,54 @@ router.post("/sendOtp", cors.corsWithOptions,async (req, res, next) => {
     User.findOne({ [inputField]: inputValue })
         .then(user => {
             if (!user) {
-                return res.send("Email/Phone not exists.");
+                return res
+                .status(404)
+                .json({ error: "Email or phone not exists." });
             } else {
-              console.log(user)
                 if (validateEmail(inputValue)) {
                     sendEmail(user.email, g_otp)
                         .then(result => {
-                            Otp.findOneAndUpdate({userId: user._id },{ otp: g_otp,is_verifile:false,timestamp:(new Date(cDate.getTime()))},{new:true,upsert:true,setDefaultsOnInsert:true})
+                            Otp.findOneAndUpdate({ userId: user._id }, { otp: g_otp, is_verifile: false, timestamp: (new Date(cDate.getTime())) }, { new: true, upsert: true, setDefaultsOnInsert: true })
                                 .then(() => {
-                                    return res.status(201).send("OTP sent. Valid for only 2 minutes");
+                                    res.statusCode = 200;
+                                    res.setHeader("Content-Type", "application/json");
+                                    res.json({
+                                        success: true,
+                                        status: "OTP sent. Valid for only 2 minutes",
+                                        emailOrPhone: user.email,
+                                    });
+                                    //return res.status(201).send("OTP sent. Valid for only 2 minutes");
                                 })
                                 .catch(err => {
                                     throw new Error(err);
-                                }); 
+                                });
                         })
                         .catch(err => {
                             throw new Error(err);
                         });
-                // } else if (validateNumber(inputValue)) {
-                //     sendSMS(user.phoneNumber, g_otp)
-                //         .then(result => {
-                //             console.log(result);
-                //             Otp.findOneAndUpdate({ otp: g_otp},{userId: user._id },{is_verifile:false,timestamp:(new Date(cDate.getTime()))},{new:true,upsert:true,setDefaultsOnInsert:true})
-                //                 .then(() => {
-                //                     return res.status(201).send("OTP sent. Valid for only 2 minutes");
-                //                 })
-                //                 .catch(err => {
-                //                     throw new Error(err);
-                //                 });
-                //         })
-                //         .catch(err => {
-                //             throw new Error(err);
-                //         });
+                    // } else if (validateNumber(inputValue)) {
+                    //     sendSMS(user.phoneNumber, g_otp)
+                    //         .then(result => {
+                    //             console.log(result);
+                    //             Otp.findOneAndUpdate({ otp: g_otp},{userId: user._id },{is_verifile:false,timestamp:(new Date(cDate.getTime()))},{new:true,upsert:true,setDefaultsOnInsert:true})
+                    //                 .then(() => {
+                    //                     return res.status(201).send("OTP sent. Valid for only 2 minutes");
+                    //                 })
+                    //                 .catch(err => {
+                    //                     throw new Error(err);
+                    //                 });
+                    //         })
+                    //         .catch(err => {
+                    //             throw new Error(err);
+                    //         });
                 } else {
-                    return res.send("Invalid phone/email.");
+                    return res.status(403)
+                    .json("Invalid phone/email.");
                 }
             }
         })
         .catch(err => {
-            return res.send("Error occurred: " + err.message);
+            res.status(500).json({ error: err.message });
         });
 });
 router.post("/verify", cors.corsWithOptions, (req, res, next) => {
@@ -85,30 +94,45 @@ router.post("/verify", cors.corsWithOptions, (req, res, next) => {
         .then(async (foundOtp) => {
             console.log("OTP:" + foundOtp);
             if (!foundOtp) {
-                return res.send("Incorrect OTP");
+                return res
+                    .status(404)
+                    .json({ error: "Incorrect OTP" });
+                //  return res.send("Incorrect OTP");
             }
             const isExist = await User.exists({ _id: foundOtp.userId });
             if (!isExist) {
-                return res.send("Incorrect OTP or it has been expired.");
+                console.log("Incorrect OTP or it has been expired." )
+                return res
+                    .status(500)
+                    .json({ error: "Incorrect OTP or it has been expired." });
             }
             // If OTP founded then finding the associated user with this OTP using userID.
             User.findById(foundOtp.userId).then(async (user) => {
                 // If the current email and the email in DB matches then
-                if (emailOrPhone == user.email ) {
-                    await Otp.findByIdAndUpdate({ _id: foundOtp._id },{otp:null});
-                    res.send(`${emailOrPhone} has been successfully verified`);
-                //     // If the current phoneNumber and the phoneNumber in DB matches then
-                // } else if (emailOrPhone == user.phoneNumber ) {
-                //     await Otp.findByIdAndUpdate({ _id: foundOtp._id });
-                //     res.send(`${emailOrPhone} has been successfully verified`);
-                }else {
-                    res.send("Incorrect OTP or it has been expired.");
+                if (emailOrPhone == user.email) {
+                    await Otp.findByIdAndUpdate({ _id: foundOtp._id }, { otp: null });
+                    res.statusCode = 200;
+                    res.setHeader("Content-Type", "application/json");
+                    res.json({
+                        success: true,
+                        status: `${emailOrPhone} has been successfully verified`,
+                        emailOrPhone: emailOrPhone,
+                    });
+                    //res.send(`${emailOrPhone} has been successfully verified`);
+                    //     // If the current phoneNumber and the phoneNumber in DB matches then
+                    // } else if (emailOrPhone == user.phoneNumber ) {
+                    //     await Otp.findByIdAndUpdate({ _id: foundOtp._id });
+                    //     res.send(`${emailOrPhone} has been successfully verified`);
+                } else {
+                    console.log("Incorrect OTP or it has been expired.1" )
+                    return res
+                        .status(500)
+                        .json({ error: "Incorrect OTP or it has been expired." });
                 }
             })
         })
         .catch((err) => {
-            console.error("Error occurred:", err);
-            res.send("An error occurred while verifying OTP.");
+            res.status(500).json({ error: err.message });
         });
 
 });

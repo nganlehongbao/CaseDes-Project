@@ -6,13 +6,13 @@ const sendEmail = async (email, otp) => {
         const transport = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                user: 'your-email@gmail.com',
-                pass: 'your-password'          
+                user: 'vietdsqde160184@fpt.edu.vn',
+                pass: 'pzqx adsk ojvo ssjh'          
             }
         });
 
         const mailOptions = {
-            from: 'CaseDes Shop <your-email@gmail.com>',
+            from: 'CaseDes Shop <vietdsqde160184@fpt.edu.vn',
             to: email,
             subject: 'OTP Verification',        
             html:`<!DOCTYPE html>
@@ -83,7 +83,7 @@ const sendEmail = async (email, otp) => {
                           Thank you for choosing CaseDes. Use the following OTP
                           to complete the procedure to change your email address. OTP is
                           valid for
-                          <span style="font-weight: 600; color: #1f1f1f;">5 minutes</span>.
+                          <span style="font-weight: 600; color: #1f1f1f;">2 minutes</span>.
                           Do not share this code with others, including CaseDes
                           employees.
                         </p>
