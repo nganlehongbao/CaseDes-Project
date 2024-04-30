@@ -400,9 +400,7 @@ const Register = (props) => {
               <div className="relative flex items-center">
                 <input
                   value={userRegiste.passwords}
-                  onChange={(e) =>
-                    setUserRegist({ ...userRegiste, passwords: e.target.value })
-                  }
+                  onChange={(e) => handleInputChange('passwords', e.target.value)}
                   name="password"
                   type={viewPass ? `password` : `text`}
                   required

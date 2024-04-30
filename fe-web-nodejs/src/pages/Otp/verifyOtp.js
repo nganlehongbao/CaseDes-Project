@@ -11,9 +11,9 @@ const VerifyOTP = () => {
         otp: otpInputs.join('')
       }
       const response = await verifyOtp(verifyForm);
-      setError(response.data.status)
       if (response.data.success) {
-        console.log("verifyOtp success");
+        window.location.href =response.data.redirectUrl;
+        console.log(response)
       }
     } catch (error) {
       console.error(error);

@@ -111,12 +111,16 @@ router.post("/verify", cors.corsWithOptions, (req, res, next) => {
                 // If the current email and the email in DB matches then
                 if (emailOrPhone == user.email) {
                     await Otp.findByIdAndUpdate({ _id: foundOtp._id }, { otp: null });
+                    var token = authenticate.getTokenForPass({ _id: user._id });
+                   
                     res.statusCode = 200;
+
                     res.setHeader("Content-Type", "application/json");
                     res.json({
                         success: true,
                         status: `${emailOrPhone} has been successfully verified`,
                         emailOrPhone: emailOrPhone,
+                        redirectUrl: `http://localhost:3000/reset-password/${user._id}/${token}`
                     });
                     //res.send(`${emailOrPhone} has been successfully verified`);
                     //     // If the current phoneNumber and the phoneNumber in DB matches then

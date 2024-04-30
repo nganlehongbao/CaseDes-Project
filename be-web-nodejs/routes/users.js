@@ -158,22 +158,35 @@ router.get("/logout", (req, res) => {
     next(err);
   }
 });
-
-router.get(
-  "/facebook/token",
-  passport.authenticate("facebook-token"),
-  (req, res) => {
-    if (req.user) {
-      var token = authenticate.getToken({ _id: req.user._id });
-      res.statusCode = 200;
-      res.setHeader("Content-Type", "application/json");
-      res.json({
-        success: true,
-        token: token,
-        status: "You are successfully logged in!",
+router.put("/reset-password/:userId", cors.corsWithOptions, authenticate.verifyUser,  async (req, res,next) => {
+  const { passwords } = req.body;
+  User.findById({ _id: req.params.userId })
+    .then((user) => {
+      if (!user) {
+        return res
+          .status(404)
+          .json({ error: "User Not Found" });
+      }
+      bcrypt.hash(passwords, 10, async (err, hash) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Error hashing the password." });
+        }
+        user.passwords = hash,
+          await user.save().then((users) => {
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            res.json({
+              success: true,
+              status: `Passwor has reset successfully `,
+              redirectUrl: `http://localhost:3000/login`
+            });
+          }).catch((err) => next(err))
       });
-    }
-  }
-);
+
+    }).catch((err) => next(err));
+});
+
 
 module.exports = router;

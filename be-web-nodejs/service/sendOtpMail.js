@@ -6,13 +6,13 @@ const sendEmail = async (email, otp) => {
         const transport = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                user: 'your-email@gmail.com',
-                pass: 'your-password'          
+              user: 'your-email@gmail.com',
+              pass: 'your-password'          
             }
         });
 
         const mailOptions = {
-            from: 'CaseDes Shop',
+            from: 'CaseDes Shop <your-email@gmail.com>',
             to: email,
             subject: 'OTP Verification',        
             html:`<!DOCTYPE html>

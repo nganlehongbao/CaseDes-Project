@@ -34,6 +34,7 @@ exports.verifyUser = (req, res, next) => {
     req.query.token ||
     req.headers["x-token"] ||
     req.headers.authorization.split(" ")[1];
+    console.log(token)
   jwt.verify(token, config.secretKey, (verifyErr, decoded) => {
     if (verifyErr) {
       const err = new Error(
@@ -59,6 +60,10 @@ exports.verifyUser = (req, res, next) => {
 exports.getToken = function (user) {
   return jwt.sign(user, config.secretKey, { expiresIn: 3600 });
 };
+exports.getTokenForPass = function (user) {
+  return jwt.sign(user, config.secretKey, { expiresIn: 120 });
+};
+
 var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = config.secretKey;
