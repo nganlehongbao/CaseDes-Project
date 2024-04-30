@@ -158,7 +158,7 @@ router.get("/logout", (req, res) => {
     next(err);
   }
 });
-router.put("/reset-password/:userId", cors.corsWithOptions, authenticate.verifyUser,  async (req, res,next) => {
+router.put("/reset-password/:userId", cors.corsWithOptions, async (req, res,next) => {
   const { passwords } = req.body;
   User.findById({ _id: req.params.userId })
     .then((user) => {

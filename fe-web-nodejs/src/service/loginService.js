@@ -48,8 +48,6 @@ export const postRegist = async (RegistDTO) => {
 };
 export const resetPasswords = async (ResetForm) => {
   try {
-    Cookies.set("token", ResetForm.token);
-    axios.defaults.headers.common["Authorization"] = `Bearer ${ResetForm.token}`;
     const response = await axios.put("/users/reset-password/"+ResetForm.userId, ResetForm);
 
     console.log("Response:", response.data);

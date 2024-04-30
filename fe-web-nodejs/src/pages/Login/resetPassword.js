@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { resetPasswords } from '../../service/loginService';
-import Cookies from "js-cookie";
 const ResetPass = () => {
   const [resetPass, setResetPass] = useState({
     passwords: "",
@@ -22,7 +21,6 @@ const ResetPass = () => {
       const formReset = {
         passwords:resetPass.passwords,
         userId:userId,
-        token:token,
       }
       const response = await  resetPasswords(formReset);
       if (response.data.success) {

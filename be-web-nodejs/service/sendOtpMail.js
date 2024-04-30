@@ -7,7 +7,7 @@ const sendEmail = async (email, otp) => {
             service: "gmail",
             auth: {
               user: 'your-email@gmail.com',
-              pass: 'your-password'          
+              pass: 'your-password'           
             }
         });
 

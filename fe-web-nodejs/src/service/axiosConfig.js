@@ -12,7 +12,7 @@ instance.interceptors.request.use((config) => {
     // Initialize headers if not already present
     config.headers = config.headers || {};
   
-    // Lấy token từ local storage
+    // Lấy token từ cookie
     const authToken = Cookies.get('token');
   
     // Kiểm tra xem token có tồn tại hay không
