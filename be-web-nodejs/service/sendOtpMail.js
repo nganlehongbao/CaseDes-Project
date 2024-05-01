@@ -4,15 +4,17 @@ const nodemailer = require("nodemailer");
 const sendEmail = async (email, otp) => {
     try {
         const transport = nodemailer.createTransport({
-            service: "gmail",
+          host: 'mail.pviet.id.vn',
+          port: 465 ,
+          secure: true,
             auth: {
-              user: 'your-email@gmail.com',
-              pass: 'your-password'           
+                user:"casedes65@pviet.id.vn",
+                pass:"eA5*n#||CJXbm9k"   
             }
         });
 
         const mailOptions = {
-            from: 'CaseDes Shop <your-email@gmail.com>',
+            from: 'CaseDes Shop <casedes65@pviet.id.vn>',
             to: email,
             subject: 'OTP Verification',        
             html:`<!DOCTYPE html>

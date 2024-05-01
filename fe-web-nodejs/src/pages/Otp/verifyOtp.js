@@ -1,9 +1,21 @@
 import React, { useState } from 'react';
-import { verifyOtp } from '../../service/OtpService';
+import { verifyOtp ,sendOtp} from '../../service/OtpService';
 
 const VerifyOTP = () => {
   const [error, setError] = useState("");
   const [otpInputs, setOtpInputs] = useState(['', '', '', '', '', '']);
+  const handleSendCode = async () => {
+    try {
+      const otpForm = {
+        emailOrPhone: window.localStorage.getItem('inputType')
+      }
+      const response = await sendOtp(otpForm);
+      console.log(response.data.emailOrPhone)
+    } catch (error) {
+      console.error(error);
+      setError('Error sending verification code');
+    }
+  };
   const handleVerifyOTP = async () => {
     try {
       const verifyForm = {
@@ -64,7 +76,7 @@ const VerifyOTP = () => {
                   </div>
 
                   <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
-                    <p>Didn't receive code?</p> <a className="flex flex-row items-center text-blue-600" href="http://" target="_blank" rel="noopener noreferrer">Resend</a>
+                    <p>Didn't receive code?</p> <a className="flex flex-row items-center text-blue-600"  target="_blank" rel="noopener noreferrer" onClick={handleSendCode}>Resend</a>
                   </div>
                 </div>
               </div>

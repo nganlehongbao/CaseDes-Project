@@ -37,7 +37,7 @@ const Login = (props) => {
             setError("Email/Phone and password are required.");
           }
         } catch (error) {
-          
+            setError("Email/Phone and password are wrong.");
             console.error("Axios Error:", error);
           
     

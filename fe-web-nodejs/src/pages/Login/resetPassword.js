@@ -11,7 +11,8 @@ const ResetPass = () => {
     passwords: "",
     confirmPassword: "",
   });
-  let { userId, token } = useParams();
+  let { userId } = useParams();
+  const userID = userId.split("$")[0]
   useEffect(() => {
     window.localStorage.removeItem('inputType');
   }, [1]);
@@ -20,7 +21,7 @@ const ResetPass = () => {
     if(resetPass.passwords === resetPass.confirmPassword){
       const formReset = {
         passwords:resetPass.passwords,
-        userId:userId,
+        userId:userID,
       }
       const response = await  resetPasswords(formReset);
       if (response.data.success) {
@@ -62,7 +63,7 @@ const ResetPass = () => {
         <div className="mt-7 bg-white rounded-xl shadow-lg dark:bg-gray-800 dark:border-gray-700 border-2 border-indigo-300">
           <div className="p-4 sm:p-7">
             <div className="text-center">
-              <h1 className="block text-2xl font-bold text-gray-800 dark:text-white">Resset password {userId}</h1>
+              <h1 className="block text-2xl font-bold text-gray-800 dark:text-white">Resset password</h1>
               <h2 className='text-danger'> {error && <p>{error}</p>}</h2>
             </div>
 

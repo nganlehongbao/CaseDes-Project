@@ -18,7 +18,7 @@ const publicRoutes = [
     { path: '/login', component: Login, Layout: AuthLayout },
     { path: '/send-otp', component: SendOTP, Layout: AuthLayout },
     { path: '/verify-otp', component: VerifyOTP, Layout: AuthLayout },
-    { path: '/reset-password/:userId/:token', component: ResetPass, Layout: AuthLayout },
+    { path: '/reset-password/:userId', component: ResetPass, Layout: AuthLayout },
     { path: '/', component: Home, Layout: DefaultLayout },
     { path: '/products', component: ListProduct, Layout: DefaultLayout },
     { path: '/design-phone-case', component: DesignPhoneCase, Layout: DefaultLayout },

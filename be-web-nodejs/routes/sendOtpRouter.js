@@ -120,7 +120,7 @@ router.post("/verify", cors.corsWithOptions, (req, res, next) => {
                         success: true,
                         status: `${emailOrPhone} has been successfully verified`,
                         emailOrPhone: emailOrPhone,
-                        redirectUrl: `http://localhost:3000/reset-password/${user._id}/${token}`
+                        redirectUrl: `http://localhost:3000/reset-password/${user._id +"$"+token}`
                     });
                     //res.send(`${emailOrPhone} has been successfully verified`);
                     //     // If the current phoneNumber and the phoneNumber in DB matches then
