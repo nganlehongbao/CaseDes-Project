@@ -35,6 +35,10 @@ const VerifyOTP = () => {
   const handleInputChange = (index, value) => {
     const newOtpInputs = [...otpInputs];
     newOtpInputs[index] = value;
+    if (index < otpInputs.length - 1 && value.length === 1) {
+      const nextIndex = index + 1;
+      document.getElementById(`otpInput-${nextIndex}`).focus();
+    }
     setOtpInputs(newOtpInputs);
   };
 
@@ -59,6 +63,7 @@ const VerifyOTP = () => {
                   {otpInputs.map((value, index) => (
                     <div key={index} className="w-16 h-16">
                       <input
+                       id={`otpInput-${index}`}
                         className="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
                         type="text"
                         value={value}
