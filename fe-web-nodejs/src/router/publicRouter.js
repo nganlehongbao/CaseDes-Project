@@ -12,6 +12,7 @@ import AuthLayout from '../layouts/AuthLayout';
 import SendOTP from '../pages/Otp/sendOtp';
 import VerifyOTP from '../pages/Otp/verifyOtp';
 import ResetPass from '../pages/Login/resetPassword';
+import UserPage from '../pages/User/UserPage';
 const publicRoutes = [
     { path: '/Register', component: Register, Layout: AuthLayout },
     { path: '/Detail', component: DetailProduct },
@@ -26,6 +27,7 @@ const publicRoutes = [
     { path: '/template-phone-case', component: TemplatePhoneCase, Layout: DefaultLayout },
     { path: '/carts', component: Carts, Layout: DefaultLayout },
     { path: '/payment', component: Payment, Layout: DefaultLayout },
+    { path: '/user/*', component: UserPage, Layout: DefaultLayout },
 ];
 
 export default publicRoutes;

@@ -12,6 +12,7 @@ var logger = require("morgan");
 const mongoose = require("mongoose");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+var userDetailRouter = require("./routes/userDetail");
 var authRouter = require("./routes/authRouter");
 var roleRouter = require("./routes/roleRouter");
 var uploadRouter = require("./routes/uploadRouter");
@@ -77,6 +78,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/user-detail", userDetailRouter);
 app.use("/role", roleRouter);
 app.use("/imageUpload", uploadRouter);
 app.use("/design-phone-case", phoneCaseDesignRouter);
