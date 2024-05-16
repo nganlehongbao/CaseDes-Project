@@ -1,4 +1,5 @@
 import DefaultLayout from '../layouts/DefaultLayout';
+import AdminLayout from '../layouts/AdminLayout/AdminLayout'
 import Home from '../pages/Home/Home';
 import ListProduct from '../pages/ListProduct/ListProduct';
 import DesignPhoneCase from '../pages/DesignPhoneCase';
@@ -12,6 +13,8 @@ import AuthLayout from '../layouts/AuthLayout';
 import SendOTP from '../pages/Otp/sendOtp';
 import VerifyOTP from '../pages/Otp/verifyOtp';
 import ResetPass from '../pages/Login/resetPassword';
+import UserPage from '../pages/Admin/user/user';
+
 const publicRoutes = [
     { path: '/Register', component: Register, Layout: AuthLayout },
     { path: '/Detail', component: DetailProduct },
@@ -26,6 +29,8 @@ const publicRoutes = [
     { path: '/template-phone-case', component: TemplatePhoneCase, Layout: DefaultLayout },
     { path: '/carts', component: Carts, Layout: DefaultLayout },
     { path: '/payment', component: Payment, Layout: DefaultLayout },
+    { path: '/admin/user', component: UserPage, Layout: AdminLayout },
+
 ];
 
 export default publicRoutes;
