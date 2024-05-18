@@ -17,6 +17,8 @@ var roleRouter = require("./routes/roleRouter");
 var uploadRouter = require("./routes/uploadRouter");
 var sendOtpRouter = require("./routes/sendOtpRouter");
 const phoneCaseDesignRouter = require("./routes/phoneCaseDesignRouter");
+const productsRouter = require("./routes/productRouter");
+const cartRouter = require("./routes/cartRouter");
 
 //passport
 var passport = require("passport");
@@ -51,8 +53,8 @@ app.use(
 );
 //passport
 //app.use(passport.initialize());
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/", authRouter);
@@ -81,6 +83,9 @@ app.use("/role", roleRouter);
 app.use("/imageUpload", uploadRouter);
 app.use("/design-phone-case", phoneCaseDesignRouter);
 app.use("/author", sendOtpRouter);
+app.use("/products", productsRouter);
+app.use("/cart", cartRouter);
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
