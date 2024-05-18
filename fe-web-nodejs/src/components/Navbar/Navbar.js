@@ -11,19 +11,19 @@ import Button from "../Button";
 import { logout } from "../../service/loginService";
 import { MenuLinks, DropdownLinks } from "../../constants/href";
 function NavBar() {
-  const [username, setUsername] = useState("");
+  const [userInfor, setuserInfor] = useState("");
 
   useEffect(() => {
-    const storedUsername = Cookies.get("info");
+    const storeduserInfor = Cookies.get("info");
 
-    if (storedUsername) {
-      const userData = JSON.parse(storedUsername);
-      setUsername(`${userData.firstName} ${userData.lastName}`);
+    if (storeduserInfor) {
+      const userData = JSON.parse(storeduserInfor);
+      setuserInfor(userData);
     }
   }, []);
   const handleLogout = () => {
     logout();
-    setUsername("");
+    setuserInfor("");
   };
   return (
     <div className="bg-white dark:bg-gray-900 dark:text-white duration-200  z-40">
@@ -102,7 +102,7 @@ function NavBar() {
             <div>
               <DarkMode />
             </div>
-            {!username && (
+            {!userInfor && (
               <div className="flex">
                 <div>
                   <Button
@@ -124,14 +124,11 @@ function NavBar() {
                 </div>
               </div>
             )}
-            {username && (
-              <div className="navbar-nav font-weight-bold py-0 d-flex mr-2">
-                {username && (
-                  <span className="">
-                    <Button primary>{username}!</Button>
-                  </span>
+            {userInfor && (
+              <div className="navbar-nav font-weight-bold py-0 flex mr-2">
+                {userInfor && (
+                  <button className="mr-4"><a href="/user"><img className="h-12 w-full text-gray-300 rounded-full" src={userInfor.imgAvt} /></a></button>
                 )}
-
                 <Button
                   onClick={handleLogout}
                   leftIcon={<FontAwesomeIcon icon={faRightToBracket} />}

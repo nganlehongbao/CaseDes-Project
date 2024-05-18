@@ -61,7 +61,7 @@ exports.verifyUser = (req, res, next) => {
   });
 };
 exports.getToken = function (user) {
-  return jwt.sign(user, config.secretKey, { expiresIn: 3600 });
+  return jwt.sign(user, config.secretKey, { expiresIn: '7d' });
 };
 exports.getTokenForPass = function (user) {
   return jwt.sign(user, config.secretKey, { expiresIn: 120 });

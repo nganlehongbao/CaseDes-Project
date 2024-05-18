@@ -12,6 +12,7 @@ var logger = require("morgan");
 const mongoose = require("mongoose");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+var userDetailRouter = require("./routes/userDetail");
 var authRouter = require("./routes/authRouter");
 var roleRouter = require("./routes/roleRouter");
 var uploadRouter = require("./routes/uploadRouter");
@@ -19,7 +20,7 @@ var sendOtpRouter = require("./routes/sendOtpRouter");
 const phoneCaseDesignRouter = require("./routes/phoneCaseDesignRouter");
 const productsRouter = require("./routes/productRouter");
 const cartRouter = require("./routes/cartRouter");
-
+var order = require("./routes/order");
 //passport
 var passport = require("passport");
 var authenticate = require("./authenticate");
@@ -79,6 +80,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/user-detail", userDetailRouter);
 app.use("/role", roleRouter);
 app.use("/imageUpload", uploadRouter);
 app.use("/design-phone-case", phoneCaseDesignRouter);
@@ -86,6 +88,7 @@ app.use("/author", sendOtpRouter);
 app.use("/products", productsRouter);
 app.use("/cart", cartRouter);
 
+app.use("/order", order);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
