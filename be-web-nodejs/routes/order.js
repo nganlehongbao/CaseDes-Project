@@ -33,7 +33,8 @@ router.get('/refund',cors.cors, function (req, res, next) {
 
 
 router.post('/create_payment_url', cors.corsWithOptions, function (req, res, next) {
-    
+    const userDetail =req.body.userDetail;
+    console.log(userDetail);
     process.env.TZ = 'Asia/Ho_Chi_Minh';
     
     let date = new Date();
@@ -49,7 +50,7 @@ router.post('/create_payment_url', cors.corsWithOptions, function (req, res, nex
     let vnpUrl = process.env.vnp_Url;
     let returnUrl = process.env.vnp_ReturnUrl;
     let orderId = moment(date).format('DDHHmmss');
-    let amount = req.body.amount;
+    let amount = userDetail.totalPrice;
     let bankCode = req.body.bankCode;
     
     let locale = 'vn';
