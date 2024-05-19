@@ -1,17 +1,18 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-var authenticate = require('../authenticate');
+var authenticate = require("../authenticate");
 const Role = require("../models/role");
 const RoleRouter = express.Router();
-const cors = require('./cors');
+const cors = require("./cors");
 RoleRouter.use(bodyParser.json());
 
 //Create, Read, Delete => dish
-RoleRouter
-  .route("/")
-  .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
-  .get(cors.cors, authenticate.verifyUser,(req, res, next) => {
+RoleRouter.route("/")
+  .options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+  })
+  .get(cors.cors, authenticate.verifyUser, (req, res, next) => {
     Role.find({})
       .then(
         (phonCaseDesigns) => {
@@ -24,7 +25,7 @@ RoleRouter
       .catch((err) => next(err));
   })
 
-  .post(cors.corsWithOptions,(req, res, next) => {
+  .post(cors.corsWithOptions, (req, res, next) => {
     Role.create(req.body)
       .then(
         (dish) => {
@@ -54,7 +55,5 @@ RoleRouter
       )
       .catch((err) => next(err));
   });
-
-
 
 module.exports = RoleRouter;

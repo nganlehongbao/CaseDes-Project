@@ -11,17 +11,21 @@ var FacebookTokenStrategy = require("passport-facebook-token");
 //task1 ass3
 exports.verifyAdmin = (req, res, next) => {
   if (req.user.role) {
-     Role.findById(req.user.role).then((role)=>{
-      if(role.roleName === "ADMIN"){
-        return next();
-      }else{
-        const err = new Error("You are not authorized to perform this operation!");
-        err.status = 403;
+    Role.findById(req.user.role)
+      .then((role) => {
+        if (role.roleName === "ADMIN") {
+          return next();
+        } else {
+          const err = new Error(
+            "You are not authorized to perform this operation!"
+          );
+          err.status = 403;
+          return next(err);
+        }
+      })
+      .catch((err) => {
         return next(err);
-      }
-     }).catch((err) => {
-      return next(err);
-    });
+      });
   } else {
     const err = new Error("You are not authorized to perform this operation!");
     err.status = 403;
@@ -34,7 +38,6 @@ exports.verifyUser = (req, res, next) => {
     req.query.token ||
     req.headers["x-token"] ||
     req.headers.authorization.split(" ")[1];
-    console.log(token)
   jwt.verify(token, config.secretKey, (verifyErr, decoded) => {
     if (verifyErr) {
       const err = new Error(
@@ -88,7 +91,7 @@ exports.jwtPassport = passport.use(
 exports.facebookPassport = passport.use(
   new FacebookTokenStrategy(
     {
-      clientID: process.env.FACEBOOK_APP_ID,  
+      clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
     },
     (accessToken, refreshToken, profile, done) => {
