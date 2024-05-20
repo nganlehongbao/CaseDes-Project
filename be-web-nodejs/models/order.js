@@ -1,17 +1,25 @@
 const mongoose = require("mongoose");
 
+const productSchema = new mongoose.Schema({
+  productId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+});
+
 const orderSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "users", // Refers to the User model
     required: true,
   },
-  productId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Product", // Refers to the Product model
-    required: true,
-  },
-  quantity: {
+  products: [productSchema], // Array of products
+  totalQuantity: {
     type: Number,
     required: true,
   },
@@ -39,17 +47,19 @@ const orderSchema = new mongoose.Schema({
     type: String,
   },
   paymentMethod: {
-    type: Number,
-    enum: [PAYMENT_METHOD.CASH, PAYMENT_METHOD.CARD, PAYMENT_METHOD.ONLINE],
-    required: true,
+    type: String,
+    enum: ["Cash", "CreditCard"],
   },
   status: {
-    type: Number,
-    enum: [STATUS.UNPAID, STATUS.PAID],
-    default: STATUS.UNPAID,
+    type: String,
+    enum: ["paid", "pending", "failed"],
+    default: "pending",
+  },
+  oderId: {
+    type: String,
   },
 });
 
 const Order = mongoose.model("Order", orderSchema);
 
-module.exports = { Order, STATUS, PAYMENT_METHOD };
+module.exports = Order;
