@@ -7,7 +7,6 @@ const {
 const productRouter = express.Router();
 productRouter.use(bodyParser.json());
 
-// Create a new product
 productRouter.post("/", async (req, res) => {
   try {
     const product = new Product(req.body);
@@ -18,16 +17,14 @@ productRouter.post("/", async (req, res) => {
   }
 });
 
-// Get all products
 productRouter.get("/", async (req, res) => {
   try {
-    const products = await Product.find().populate("feedback");
+    const products = await Product.find().populate("feedbacks");
     res.send(products);
   } catch (err) {
     res.status(500).send(err);
   }
 });
-
 // Get a single product by ID
 productRouter.get("/:id", async (req, res) => {
   try {
@@ -38,7 +35,6 @@ productRouter.get("/:id", async (req, res) => {
     res.status(500).send(err);
   }
 });
-
 // Update a product by ID
 productRouter.put("/:id", async (req, res) => {
   try {
@@ -51,7 +47,6 @@ productRouter.put("/:id", async (req, res) => {
     res.status(500).send(err);
   }
 });
-
 // Delete a product by ID
 productRouter.delete("/:id", async (req, res) => {
   try {
@@ -62,7 +57,6 @@ productRouter.delete("/:id", async (req, res) => {
     res.status(500).send(err);
   }
 });
-
 //Filter product
 productRouter.post("/filter", async (req, res) => {
   try {

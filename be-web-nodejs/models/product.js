@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-// Product Schema
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -39,11 +38,15 @@ const productSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  feedback: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Feedback", // Refers to the feedback
-    required: true,
-  },
+  feedbacks: [
+    {
+      feedBackId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FeedBack",
+        required: true,
+      },
+    },
+  ],
   quantity: {
     type: Number,
     required: true,
@@ -59,8 +62,7 @@ const productSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: [0, 1, 2], // 0 is available ,1 is out_of , 2 is discontinued.
-    default: 0,
+    enum: ["available", "soldOut"],
   },
 });
 

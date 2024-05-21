@@ -1,13 +1,14 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const Cart = require("../models/cart");
+const cors = require("./cors");
 
 var authenticate = require("../authenticate");
 
 const cartRouter = express.Router();
 cartRouter.use(bodyParser.json());
 
-cartRouter.get("/", authenticate.verifyUser, async (req, res) => {
+cartRouter.get("/", cors.cors, authenticate.verifyUser, async (req, res) => {
   try {
     const user = req.user;
     if (!user) {
@@ -25,14 +26,13 @@ cartRouter.get("/", authenticate.verifyUser, async (req, res) => {
   }
 });
 
-cartRouter.post("/", async (req, res) => {
+cartRouter.post("/", cors.cors, async (req, res) => {
   try {
-    const { userId, products, totalPrice, quantity, status } = req.body;
+    const { products, userId, totalPrice, status } = req.body;
 
     const cartItem = new Cart({
-      userId,
+      userId: userId,
       products,
-      quantity,
       totalPrice,
       status,
     });
@@ -44,7 +44,7 @@ cartRouter.post("/", async (req, res) => {
 });
 
 // Update a product by ID
-cartRouter.put("/:id", async (req, res) => {
+cartRouter.put("/:id", cors.cors, async (req, res) => {
   try {
     const product = await Cart.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -57,7 +57,7 @@ cartRouter.put("/:id", async (req, res) => {
 });
 
 // Delete a product by ID
-cartRouter.delete("/:id", async (req, res) => {
+cartRouter.delete("/:id", cors.cors, async (req, res) => {
   try {
     const product = await Cart.findByIdAndDelete(req.params.id);
     if (!product) return res.status(404).send("Product not found");

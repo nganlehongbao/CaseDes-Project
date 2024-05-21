@@ -1,26 +1,9 @@
 const mongoose = require("mongoose");
 
-const productSchema = new mongoose.Schema({
-  productId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Product",
-    required: true,
-  },
-  quantity: {
-    type: Number,
-    required: true,
-  },
-});
-
 const orderSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "users", // Refers to the User model
-    required: true,
-  },
-  products: [productSchema], // Array of products
-  totalQuantity: {
-    type: Number,
     required: true,
   },
   totalPrice: {
@@ -35,15 +18,14 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  createTime: {
-    type: Date,
-    default: Date.now,
-  },
   phoneNumber: {
     type: String,
     required: true,
   },
   note: {
+    type: String,
+  },
+  oderId: {
     type: String,
   },
   paymentMethod: {
@@ -52,11 +34,8 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["paid", "pending", "failed"],
+    enum: ["paid", "unpaid"],
     default: "pending",
-  },
-  oderId: {
-    type: String,
   },
 });
 

@@ -1,6 +1,3 @@
-/**
- * Created by CTT VNPAY
- */
 const mongoose = require("mongoose");
 
 let express = require("express");
@@ -10,6 +7,8 @@ const request = require("request");
 const moment = require("moment");
 const cors = require("./cors");
 const Order = require("../models/order");
+const Product = require("../models/product");
+const Cart = require("../models/cart");
 
 router.get("/", cors.cors, function (req, res, next) {
   res.render("orderlist", { title: "Danh sách đơn hàng" });
@@ -50,25 +49,20 @@ router.post(
     let secretKey = process.env.vnp_HashSecret;
     let vnpUrl = process.env.vnp_Url;
     let returnUrl = process.env.vnp_ReturnUrl;
-    let orderId = moment(date).format("DDHHmmss");
+    let orderId = "664cc8c7b683f1714a6ddb0c"; // cartId
     let amount = userDetail.totalPrice;
     let bankCode = req.body.bankCode;
 
     const order = new Order({
       userId: userDetail.useId,
-      products: [
-        { productId: "60d0fe4f5311236168a109cb", quantity: 2 },
-        { productId: "60d0fe4f5311236168a109cc", quantity: 1 },
-      ],
-      totalQuantity: userDetail.quantity,
       totalPrice: userDetail.totalPrice,
       name: userDetail.userName,
       address: userDetail.address,
       phoneNumber: userDetail.phoneNumber,
       note: userDetail.note,
-      paymentMethod: "Cash", // Use string values as defined in the enum
-      status: "pending",
       orderId: orderId,
+      paymentMethod: "Cash",
+      status: "unpaid",
     });
 
     try {
@@ -89,8 +83,9 @@ router.post(
     vnp_Params["vnp_Locale"] = locale;
     vnp_Params["vnp_CurrCode"] = currCode;
     vnp_Params["vnp_TxnRef"] = orderId;
-    vnp_Params["vnp_OrderInfo"] = "Thanh toan cho ma GD:" + orderId;
-    vnp_Params["vnp_OrderType"] = "other";
+    vnp_Params["vnp_OrderInfo"] = "thanh toan " + orderId;
+    vnp_Params["vnp_OrderType"] = "Cash"; //
+    //userDetail.paymentMethod
     vnp_Params["vnp_Amount"] = amount * 100;
     vnp_Params["vnp_ReturnUrl"] = returnUrl;
     vnp_Params["vnp_IpAddr"] = ipAddr;
@@ -125,6 +120,7 @@ router.get("/vnpay_return", cors.cors, async (req, res, next) => {
 
   vnp_Params = sortObject(vnp_Params);
   let tmnCode = process.env.vnp_TmnCode;
+  let rspCode = vnp_Params["vnp_ResponseCode"];
   let secretKey = process.env.vnp_HashSecret;
   let vnpUrl = process.env.vnp_Url;
   let returnUrl = process.env.vnp_ReturnUrl;
@@ -134,21 +130,54 @@ router.get("/vnpay_return", cors.cors, async (req, res, next) => {
   let hmac = crypto.createHmac("sha512", secretKey);
   let signed = hmac.update(new Buffer(signData, "utf-8")).digest("hex");
 
+  let cartItem = await Cart.findOne(orderId);
+  let order = await Order.findOne({ orderId: orderId });
+  let isPaid = true;
+  if (order.status == "unpaid") {
+    isPaid = false;
+  }
+  if (order.status == "paid") {
+    isPaid = true;
+  }
   if (secureHash === signed) {
-    let order = await Order.findOne({ orderId });
-    //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
-    if (secureHash === signed && vnp_Params["vnp_ResponseCode"] === "00") {
-      order.status = "paid";
-      await order.save();
-      res.redirect("http://localhost:3000/payment");
-      //  res.render('success', {code: vnp_Params['vnp_ResponseCode']});
+    if (order) {
+      if (!isPaid) {
+        if (rspCode == "00") {
+          cartItem.status = "paid";
+          //
+          for (product of cartItem.products) {
+            let p = await Product.findById(product.productId);
+            if (!p) {
+              continue;
+            }
+            p.inventory -= product.quantity;
+            p.bought += product.quantity;
+            if (p.inventory < 0) {
+              p.status = "soldOut";
+            }
+
+            await p.save();
+            await cartItem.save();
+          }
+          order.status = "paid";
+          await order.save();
+          res.status(200).json({ RspCode: "00", Message: "Success" });
+        } else {
+          order.status = "failed";
+          await order.save();
+          res.status(200).json({ RspCode: "00", Message: "Success" });
+        }
+      } else {
+        res.status(200).json({
+          RspCode: "02",
+          Message: "This order has been updated to the payment status",
+        });
+      }
     } else {
-      order.status = "failed";
-      await order.save();
-      res.redirect("http://localhost:3000/payment");
+      res.status(200).json({ RspCode: "01", Message: "Order not found" });
     }
   } else {
-    res.render("success", { code: "97" });
+    res.status(200).json({ RspCode: "97", Message: "Checksum failed" });
   }
 });
 
@@ -163,7 +192,8 @@ router.get("/vnpay_ipn", function (req, res, next) {
   delete vnp_Params["vnp_SecureHashType"];
 
   vnp_Params = sortObject(vnp_Params);
-  let secretKey = process.env.vnp_HashSecret;
+  let config = require("config");
+  let secretKey = config.get("vnp_HashSecret");
   let querystring = require("qs");
   let signData = querystring.stringify(vnp_Params, { encode: false });
   let crypto = require("crypto");
@@ -183,6 +213,9 @@ router.get("/vnpay_ipn", function (req, res, next) {
         if (paymentStatus == "0") {
           //kiểm tra tình trạng giao dịch trước khi cập nhật tình trạng thanh toán
           if (rspCode == "00") {
+            //thanh cong
+            //paymentStatus = '1'
+            // Ở đây cập nhật trạng thái giao dịch thanh toán thành công vào CSDL của bạn
             res.status(200).json({ RspCode: "00", Message: "Success" });
           } else {
             //that bai
