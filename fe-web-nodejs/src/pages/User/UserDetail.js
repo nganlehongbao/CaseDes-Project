@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 const UpdateUser = () => {
     const [userDetail, setuserDetail] = useState({});
     const [errors, setErrors] = useState({
-        firstName: "",
+        firstName:"",
         lastName: "",
         address: "",
         email: "",
@@ -99,9 +99,10 @@ const UpdateUser = () => {
                     imgAvt: userDetail.imgAvt
                 }
                 const res = await updateUserById(userId, userUpdate);
-                console.log(res)
+                console.log(JSON.parse(Cookies.get("info")))
                 if (res.success) {
                     toast.success("successful");
+                    window.location.reload();
                 } else {
                     toast.error("Update user profile faild")
                 }

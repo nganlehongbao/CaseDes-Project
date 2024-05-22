@@ -42,7 +42,12 @@ router.put("/:userId", cors.cors, authenticate.verifyUser, async (req, res, next
             (users) => {
                 res.statusCode = 200;
                 res.setHeader("Content-Type", "application/json");
-                res.json({ user: users, success: true });
+                const infoUser = {
+                    firstName: users.firstName,
+                    lastName: users.lastName,
+                    imgAvt: users.imgAvt,
+                  }
+                res.json({ user: users,userinfor:infoUser, success: true });
             },
             (err) => next(err)
         )

@@ -10,18 +10,29 @@ import Cookies from "js-cookie";
 import Button from "../Button";
 import { logout } from "../../service/loginService";
 import { MenuLinks, DropdownLinks } from "../../constants/href";
+import { getUserById } from "../../service/UserService";
 function NavBar() {
   const [userInfor, setuserInfor] = useState("");
 
   useEffect(() => {
-    const storeduserInfor = Cookies.get("info");
+    // const storeduserInfor = Cookies.get("info");
 
-    if (storeduserInfor) {
-      const userData = JSON.parse(storeduserInfor);
-      setuserInfor(userData);
-    }
+    // if (storeduserInfor) {
+    //   const userData = JSON.parse(storeduserInfor);
+    //   setuserInfor(userData);
+    // }
+    fetchData()
   }, []);
+  const fetchData = async () => {
+    const userIdCookie = Cookies.get("userId");
+    if (userIdCookie) {
+        const userId = JSON.parse(userIdCookie);
+        const userData = await getUserById(userId);
+        setuserInfor(userData);
+    } 
+  }
   const handleLogout = () => {
+    localStorage.setItem("UUMG",userInfor.imgAvt)
     logout();
     setuserInfor("");
   };

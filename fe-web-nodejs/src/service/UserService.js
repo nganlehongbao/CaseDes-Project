@@ -26,3 +26,13 @@ export const updateUserPasswordById = async (userId,userUpdate)=>{
       throw error;
     }
 } 
+export const updateAvatar = async (imageFile) => {
+  try {
+      const formData = new FormData();
+      formData.append('imageFile', imageFile);
+      const response = await axios.post(`/imageUpload`, formData );
+      return response.data.updatedUser.avatar;
+  } catch (error) {
+      throw error;
+  }
+};
