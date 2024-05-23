@@ -13,6 +13,7 @@ import SendOTP from '../pages/Otp/sendOtp';
 import VerifyOTP from '../pages/Otp/verifyOtp';
 import ResetPass from '../pages/Login/resetPassword';
 import UserPage from '../pages/User/UserPage';
+import ProductDetail from '../pages/ProductDetail/ProductDetail';
 const publicRoutes = [
     { path: '/Register', component: Register, Layout: AuthLayout },
     { path: '/Detail', component: DetailProduct },
@@ -28,6 +29,7 @@ const publicRoutes = [
     { path: '/carts', component: Carts, Layout: DefaultLayout },
     { path: '/payment', component: Payment, Layout: DefaultLayout },
     { path: '/user/*', component: UserPage, Layout: DefaultLayout },
+    { path: '/products/:id', component: ProductDetail, Layout: DefaultLayout },
 ];
 
 export default publicRoutes;

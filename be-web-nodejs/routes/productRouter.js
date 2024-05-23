@@ -1,13 +1,14 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const Product = require("../models/product");
+const cors = require("./cors");
 const {
   searchAndFilterProducts,
 } = require("../repository/searchAndFilterProducts");
 const productRouter = express.Router();
 productRouter.use(bodyParser.json());
 
-productRouter.post("/", async (req, res) => {
+productRouter.post("/", cors.cors, async (req, res) => {
   try {
     const product = new Product(req.body);
     await product.save();
@@ -17,7 +18,7 @@ productRouter.post("/", async (req, res) => {
   }
 });
 
-productRouter.get("/", async (req, res) => {
+productRouter.get("/", cors.cors, async (req, res) => {
   try {
     const products = await Product.find().populate("feedbacks");
     res.send(products);
@@ -26,7 +27,7 @@ productRouter.get("/", async (req, res) => {
   }
 });
 // Get a single product by ID
-productRouter.get("/:id", async (req, res) => {
+productRouter.get("/:id", cors.cors, async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).send("Product not found");
@@ -36,7 +37,7 @@ productRouter.get("/:id", async (req, res) => {
   }
 });
 // Update a product by ID
-productRouter.put("/:id", async (req, res) => {
+productRouter.put("/:id", cors.cors, async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -48,7 +49,7 @@ productRouter.put("/:id", async (req, res) => {
   }
 });
 // Delete a product by ID
-productRouter.delete("/:id", async (req, res) => {
+productRouter.delete("/:id", cors.cors, async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) return res.status(404).send("Product not found");
@@ -58,7 +59,7 @@ productRouter.delete("/:id", async (req, res) => {
   }
 });
 //Filter product
-productRouter.post("/filter", async (req, res) => {
+productRouter.post("/filter", cors.cors, async (req, res) => {
   try {
     const filters = req.body;
     const products = await searchAndFilterProducts(filters);

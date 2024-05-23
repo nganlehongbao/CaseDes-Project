@@ -1,20 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ButtonCart from '../../components/Shared/Button';
 import { Fragment, useState } from 'react';
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
-// images import
-import Img1 from '../../assets/casdes/13.png';
-import Img2 from '../../assets/casdes/14.png';
-import Img3 from '../../assets/casdes/15.png';
-import Img4 from '../../assets/casdes/16.png';
-import Img5 from '../../assets/casdes/17.png';
-import Img6 from '../../assets/casdes/18.png';
-import Img7 from '../../assets/casdes/19.png';
-import Img8 from '../../assets/casdes/20.png';
-import Img9 from '../../assets/casdes/2.png';
+import { getProductList } from '../../service/ProductService';
+import { Link } from 'react-router-dom';
+
 
 const sortOptions = [
     { name: 'Most Popular', href: '#', current: true },
@@ -23,6 +16,7 @@ const sortOptions = [
     { name: 'Price: Low to High', href: '#', current: false },
     { name: 'Price: High to Low', href: '#', current: false },
 ];
+
 const subCategories = [
     { name: 'Traditional', href: '#' },
     { name: 'Self-designed', href: '#' },
@@ -30,6 +24,7 @@ const subCategories = [
     { name: 'Invisible', href: '#' },
     { name: 'Laptop Sleeves', href: '#' },
 ];
+
 const filters = [
     {
         id: 'color',
@@ -72,99 +67,53 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
 }
 
-const products = [
-    {
-        id: 1,
-        name: 'Earthen Bottle',
-        href: '#',
-        price: '$48',
-        rating: 4,
-        imageSrc: Img1,
-        imageAlt: 'Tall slender porcelain bottle with natural clay textured body and cork stopper.',
-    },
-    {
-        id: 2,
-        name: 'Leather Pouch',
-        href: '#',
-        price: '$32',
-        rating: 3,
 
-        imageSrc: Img2,
-        imageAlt: 'Leather pouch in natural tan color, with brass zipper and suede interior lining.',
-    },
-    {
-        id: 3,
-        name: 'Wool Scarf',
-        href: '#',
-        price: '$24',
-        rating: 5,
-
-        imageSrc: Img3,
-        imageAlt: 'Folded wool scarf in deep navy blue, with fringe edges.',
-    },
-    {
-        id: 4,
-        name: 'Ceramic Mug',
-        href: '#',
-        price: '$16',
-        rating: 4,
-
-        imageSrc: Img4,
-        imageAlt: 'Handcrafted ceramic mug in speckled beige, with glazed interior and sturdy handle.',
-    },
-    {
-        id: 5,
-        name: 'Desk Organizer',
-        href: '#',
-        price: '$36',
-        rating: 5,
-
-        imageSrc: Img5,
-        imageAlt: 'Wooden desk organizer with multiple compartments and slots for pens, pencils, and stationery.',
-    },
-    {
-        id: 6,
-        name: 'Leather Wallet',
-        href: '#',
-        rating: 3,
-
-        price: '$28',
-        imageSrc: Img6,
-        imageAlt: 'Folded leather wallet in dark brown, with multiple card slots and cash compartments.',
-    },
-    {
-        id: 7,
-        name: 'Canvas Tote Bag',
-        href: '#',
-        price: '$20',
-        rating: 5,
-
-        imageSrc: Img7,
-        imageAlt: 'Canvas tote bag in light beige, with long shoulder straps and inner pocket.',
-    },
-    {
-        id: 8,
-        name: 'Scented Candle',
-        href: '#',
-        price: '$22',
-        rating: 2,
-
-        imageSrc: Img8,
-        imageAlt: 'Scented candle in glass jar, with wooden wick and natural soy wax, emitting warm vanilla fragrance.',
-    },
-    {
-        id: 9,
-        name: 'Scented Candle',
-        href: '#',
-        price: '$22',
-        rating: 2,
-
-        imageSrc: Img9,
-        imageAlt: 'Scented candle in glass jar, with wooden wick and natural soy wax, emitting warm vanilla fragrance.',
-    },
-];
 
 const ListProduct = () => {
+    const [products, setProducts] = useState([]);
+    // const [rating, setRating] = useState(0);
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        const productList = await getProductList();
+        setProducts(productList);
+        // setRating(Math.floor(Math.random() * 5 + 1));
+        console.log(products);
+    };
+
+    const createRating = (rating) => {
+        var elements = [];
+        for (let i = 1; i <= 5; i++) {
+          if (i <= rating) {
+            elements.push(
+              <svg
+                className='w-4 h-4 text-yellow-300 ms-1'
+                aria-hidden='true'
+                xmlns='http://www.w3.org/2000/svg'
+                fill='currentColor'
+                viewBox='0 0 22 20'
+              >
+                <path d='M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z' />
+              </svg>
+            );
+          } else {
+            elements.push(
+              <svg
+                class='w-4 h-4 ms-1 text-gray-300 dark:text-gray-500'
+                aria-hidden='true'
+                xmlns='http://www.w3.org/2000/svg'
+                fill='currentColor'
+                viewBox='0 0 22 20'
+              >
+                <path d='M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z' />
+              </svg>
+            );
+          }
+        }
+        return elements;
+      };
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
     return (
         <div className="  mx-auto ">
@@ -397,12 +346,12 @@ const ListProduct = () => {
                             {/* Product grid */}
                             <div className="lg:col-span-3">
                                 <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-8 p-4">
-                                    {products.map((product) => (
-                                        <a key={product.id} href={product.href} className="group">
+                                    {products.map((product, index) => (
+                                        <Link key={product._id} to={`/products/${product._id}`} className="group">
                                             <div className=" relative aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                                                 <img
-                                                    src={product.imageSrc}
-                                                    alt={product.imageAlt}
+                                                    src={product?.images[0]}
+                                                    alt=""
                                                     className="h-full w-full object-cover object-center group-hover:opacity-75"
                                                 />
                                                 <div className="hidden group-hover:flex absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 h-full w-full text-center group-hover:backdrop-blur-sm justify-center items-center duration-200 rounded-md">
@@ -412,12 +361,12 @@ const ListProduct = () => {
                                             <div>
                                                 <div className="flex justify-between items-center">
                                                     <h3 className="mt-4 text-sm -700">{product.name}</h3>
-                                                    <p className="mt-4 text-sm  bg-green-300 rounded-md p-2">15 reviews</p>
+                                                    <p className="mt-4 text-sm  bg-green-300 rounded-md p-2">{product?.feedbacks?.length} feedbacks</p>
                                                 </div>
                                                 <div className="flex justify-between items-center">
-                                                    <p className="mt-1 text-lg font-medium ">{product.price}</p>
+                                                    <p className="mt-1 text-lg font-medium ">{product?.price?.amount}{" "}{product?.price?.currency}</p>
                                                     <div className="flex flex-row gap-1 justify-center items-center">
-                                                        {[...Array(product.rating)].map((_, index) => (
+                                                        {product?.feedbacks?.length > 0 && [...Array(Math.floor(Math.random() * 5 + 1))].map((_, index) => (
                                                             <svg
                                                                 key={index}
                                                                 xmlns="http://www.w3.org/2000/svg"
@@ -435,7 +384,7 @@ const ListProduct = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </a>
+                                        </Link>
                                     ))}
                                 </div>
                             </div>
