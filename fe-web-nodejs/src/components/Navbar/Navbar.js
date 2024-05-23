@@ -32,7 +32,6 @@ function NavBar() {
     } 
   }
   const handleLogout = () => {
-    localStorage.setItem("UUMG",userInfor.imgAvt)
     logout();
     setuserInfor("");
   };
@@ -138,7 +137,7 @@ function NavBar() {
             {userInfor && (
               <div className="navbar-nav font-weight-bold py-0 flex mr-2">
                 {userInfor && (
-                  <button className="mr-4"><a href="/user"><img className="h-12 w-full text-gray-300 rounded-full" src={userInfor.imgAvt} /></a></button>
+                  <button className="mr-4"><a href="/user"><img className="h-12 w-full text-gray-300 rounded-full"src={`http://localhost:5000/imageUpload/${userInfor.imgAvt}`} /></a></button>
                 )}
                 <Button
                   onClick={handleLogout}

@@ -28,11 +28,11 @@ export const updateUserPasswordById = async (userId,userUpdate)=>{
 } 
 export const updateAvatar = async (imageFile) => {
   try {
-      const formData = new FormData();
-      formData.append('imageFile', imageFile);
-      const response = await axios.post(`/imageUpload`, formData );
-      return response.data.updatedUser.avatar;
+    const formData = new FormData();
+    formData.append('imageFile', imageFile);
+    const response = await axios.post(`/imageUpload`, formData);
+    return response.data.image;
   } catch (error) {
-      throw error;
+    throw error;
   }
 };

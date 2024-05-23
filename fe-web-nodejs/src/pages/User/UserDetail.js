@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getUserById, updateUserById } from "../../service/UserService";
+import { getUserById, updateUserById ,updateAvatar} from "../../service/UserService";
 import { toast } from "react-toastify";
 import Cookies from 'js-cookie';
 
@@ -115,10 +115,21 @@ const UpdateUser = () => {
 
         }
     }
-    const handleImageChange = (event) => {
+    // const handleImageChange = (event) => {
+    //     const file = event.target.files[0];
+    //     const imageUrl = URL.createObjectURL(file);
+    //     setuserDetail({ ...userDetail, imgAvt: imageUrl });
+    // };
+    const handleImageChange = async (event) => {
         const file = event.target.files[0];
-        const imageUrl = URL.createObjectURL(file);
-        setuserDetail({ ...userDetail, imgAvt: imageUrl });
+        try {
+            const updatedAvatar = await updateAvatar(file);
+            setuserDetail({ ...userDetail, image: updatedAvatar });
+            toast.success("Avatar updated successfully");
+            window.location.reload();
+        } catch (error) {
+            toast.error("Failed to update avatar");
+        }
     };
     return (
         <div className="container mb-3">
@@ -132,7 +143,7 @@ const UpdateUser = () => {
                         <div className="col-span-full">
                           
                             <div className="mt-2 flex items-center gap-x-3">
-                            <img src={userDetail.imgAvt} className="h-20 w-20 text-gray-300 rounded-full" alt="" />
+                            <img  src={`http://localhost:5000/imageUpload/${userDetail.imgAvt}`} className="h-20 w-20 text-gray-300 rounded-full" alt="" />
                                 <label
                                     htmlFor="fileInput"
                                     className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 cursor-pointer"
